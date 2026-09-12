@@ -1,0 +1,90 @@
+<section class="marquee" [attr.data-surface]="surface()" aria-labelledby="verdict-heading">
+  <div class="marquee__top">
+    <a class="back" routerLink="/"><span aria-hidden="true">←</span> {{ t('product.back') }}</a>
+  </div>
+  <div class="marquee__inner">
+    @switch (surface()) {
+      @case ('loading') {
+        <span class="marquee__skeleton" aria-hidden="true"></span>
+        <h1 #verdictHeading id="verdict-heading" class="marquee__loading" tabindex="-1">{{ headline() }}</h1>
+      }
+      @case ('error') {
+        <app-verdict-mark verdict="error" />
+        <h1 #verdictHeading id="verdict-heading" class="marquee__message" tabindex="-1">{{ headline() }}</h1>
+        <button type="button" class="btn" (click)="retry()">{{ t('product.retry') }}</button>
+      }
+      @default {
+        <app-verdict-mark [verdict]="surface()" />
+        <h1 #verdictHeading id="verdict-heading" class="marquee__verdict" tabindex="-1">{{ headline() }}</h1>
+        @if (name()) {
+          <p class="marquee__product">
+            {{ name() }}
+            @if (brand()) {
+              <span class="marquee__brand">· {{ brand() }}</span>
+            }
+          </p>
+        }
+        <p class="marquee__note">{{ note() }}</p>
+      }
+    }
+  </div>
+</section>
+
+@if (surface() !== 'loading' && surface() !== 'error') {
+  <div class="details">
+    @if (analysis(); as result) {
+      <section aria-labelledby="reasons-title">
+        <h2 id="reasons-title">{{ t('product.reasons') }}</h2>
+        <ul class="reasons" role="list">
+          @for (reason of result.reasons; track $index) {
+            <li>{{ reasonText(reason) }}</li>
+          } @empty {
+            <li>{{ t('reason.none') }}</li>
+          }
+        </ul>
+        @if (result.incomplete && segments()) {
+          <p class="notice">{{ t('product.incomplete') }}</p>
+        }
+      </section>
+
+      <section aria-labelledby="ingredients-title">
+        <h2 id="ingredients-title">{{ t('product.ingredients') }}</h2>
+        @if (segments(); as parts) {
+          <p class="ingredients">@for (part of parts; track $index) {@if (part.mark) {<mark class="hl" [attr.data-level]="part.mark">{{ part.text }}</mark>} @else {<span>{{ part.text }}</span>}}</p>
+          @if (hasMarks()) {
+            <p class="legend">{{ t('product.legend') }}</p>
+          }
+        } @else {
+          <p class="ingredients ingredients--empty">{{ t('product.noIngredients') }}</p>
+        }
+      </section>
+    }
+
+    <dl class="meta">
+      <div>
+        <dt class="mono-label">{{ t('product.code') }}</dt>
+        <dd class="meta__code">{{ normalized() ?? code() }}</dd>
+      </div>
+      @if (brand()) {
+        <div>
+          <dt class="mono-label">{{ t('product.brand') }}</dt>
+          <dd>{{ brand() }}</dd>
+        </div>
+      }
+    </dl>
+
+    @if (offUrl(); as url) {
+      <p>
+        <a class="link" [href]="url" target="_blank" rel="noopener">
+          {{ needsData() ? t('product.editOff') : t('product.viewOff') }}<span aria-hidden="true"> ↗</span>
+        </a>
+      </p>
+    }
+  </div>
+}
+
+<div class="cta-sticky">
+  <div class="cta-sticky__inner">
+    <a class="btn btn--lg" routerLink="/">{{ t('product.scanNext') }}</a>
+  </div>
+</div>
