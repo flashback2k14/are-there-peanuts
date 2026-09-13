@@ -12,20 +12,42 @@
   <form class="manual" novalidate (submit)="submitManual($event)">
     <label class="manual__label" for="manual-code">{{ t('manual.label') }}</label>
     <div class="manual__row">
-      <input
-        id="manual-code"
-        class="input"
-        type="text"
-        inputmode="numeric"
-        autocomplete="off"
-        enterkeyhint="go"
-        aria-describedby="manual-help"
-        [attr.aria-invalid]="showError()"
-        [formField]="manualForm.code"
-      />
-      <button class="btn btn--soft" type="submit">{{ t('manual.submit') }}</button>
+      <div class="code-field" [class.is-error]="showError()" [style.--progress]="progress()">
+        <span class="code-field__bars" aria-hidden="true"></span>
+        <span class="code-field__slots" aria-hidden="true"><span class="code-field__typed">{{ model().code }}</span>{{ slots() }}</span>
+        <input
+          id="manual-code"
+          class="code-field__input"
+          type="text"
+          inputmode="numeric"
+          autocomplete="off"
+          spellcheck="false"
+          enterkeyhint="go"
+          aria-describedby="manual-help manual-count"
+          [attr.aria-invalid]="showError()"
+          [formField]="manualForm.code"
+        />
+      </div>
+      <button class="btn btn--icon" [class.btn--soft]="!complete()" type="submit" [attr.aria-label]="t('manual.submit')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </button>
     </div>
-    <p id="manual-help" class="manual__help" [class.is-error]="showError()">{{ helpText() }}</p>
+    <div class="manual__help">
+      <p id="manual-help" class="manual__message" [class.is-error]="showError()">{{ helpText() }}</p>
+      @if (digitCount()) {
+        <p class="manual__count" [class.is-complete]="complete()" aria-hidden="true">
+          <span class="manual__number">{{ digitCount() }}</span>
+          @if (complete()) {
+            ✓
+          } @else {
+            {{ digitsWord() }}
+          }
+        </p>
+      }
+      <span id="manual-count" class="sr-only">{{ digitCount() ? countText() : '' }}</span>
+    </div>
   </form>
 </section>
 

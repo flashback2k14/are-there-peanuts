@@ -41,40 +41,171 @@
   }
 }
 
+/* Manual entry: plan B under the camera, dressed as the digit line of a printed barcode */
 .manual {
   display: grid;
-  gap: var(--space-xs);
+  gap: var(--space-sm);
   margin-block-start: var(--space-lg);
 }
 
+/* The divider doubles as the field's visible label */
 .manual__label {
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  text-align: center;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    min-inline-size: var(--space-md);
+    block-size: var(--rule-hair);
+    background: var(--color-rule);
+  }
 }
 
 .manual__row {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--space-sm);
 }
 
-.manual__row .input {
+.code-field {
+  --progress: 0;
+  --pad-x: var(--space-md);
+  --pad-y: var(--space-xs);
+  --bars: 1.25rem;
+  --bars-gap: var(--space-2xs);
+  display: grid;
+  grid-template-rows: var(--bars) auto;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--bars-gap);
   flex: 1;
+  min-inline-size: 0;
+  padding: var(--pad-y) var(--pad-x);
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-input);
+  background: var(--color-field);
+  font-family: var(--font-label);
+  font-size: clamp(1.125rem, 2vw + 0.75rem, 1.3125rem);
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  transition: background-color var(--dur-micro) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .code-field:hover {
+    background: var(--color-paper);
+  }
+}
+
+.code-field:focus-within {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.code-field.is-error {
+  border-color: var(--color-error);
+}
+
+/* Decorative bars: faint when empty, darker with every digit */
+.code-field__bars {
+  grid-area: 1 / 1;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-ink) 0 2px,
+    transparent 2px 4px,
+    var(--color-ink) 4px 5px,
+    transparent 5px 8px,
+    var(--color-ink) 8px 11px,
+    transparent 11px 13px,
+    var(--color-ink) 13px 14px,
+    transparent 14px 17px
+  );
+  border-radius: 2px;
+  opacity: calc(0.12 + var(--progress) * 0.43);
+  transition: opacity var(--dur-short) var(--ease-out);
+}
+
+/* Empty digit slots sit behind the input; the typed part is invisible and only pushes them right */
+.code-field__slots {
+  grid-area: 2 / 1;
+  overflow: hidden;
+  white-space: pre;
+  color: var(--color-rule-2);
+}
+
+.code-field__typed {
+  color: transparent;
+}
+
+/* The input spans the whole field so a tap anywhere lands in it */
+.code-field__input {
+  grid-area: 1 / 1 / 3 / 2;
+  z-index: 1;
+  min-inline-size: 0;
+  margin: calc(-1 * var(--pad-y)) calc(-1 * var(--pad-x));
+  padding: calc(var(--pad-y) + var(--bars) + var(--bars-gap)) var(--pad-x) var(--pad-y);
+  border: 0;
+  border-radius: inherit;
+  outline: none;
+  background: transparent;
+  color: var(--color-ink);
+  font: inherit;
+  letter-spacing: inherit;
+  caret-color: var(--color-ink);
+}
+
+.btn--icon {
+  flex: none;
+  inline-size: 3.5rem;
+  block-size: 3.5rem;
+  padding: 0;
+
+  svg {
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+  }
 }
 
 .manual__help {
   display: flex;
   align-items: baseline;
-  gap: var(--space-xs);
+  justify-content: space-between;
+  gap: var(--space-sm);
   min-block-size: 1lh;
   font-size: var(--text-sm);
   color: var(--color-ink-2);
 }
 
-.manual__help.is-error {
+.manual__message {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+}
+
+.manual__count {
+  flex: none;
+}
+
+.manual__number {
+  font-family: var(--font-label);
+  font-variant-numeric: tabular-nums;
+}
+
+.manual__count.is-complete {
+  color: var(--color-mint-ink);
+  font-weight: 600;
+}
+
+.manual__message.is-error {
   color: var(--color-error);
 }
 
-.manual__help.is-error::before {
+.manual__message.is-error::before {
   content: '!';
   display: inline-grid;
   place-items: center;

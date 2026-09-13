@@ -66,6 +66,29 @@ export class Home {
       : this.t('manual.invalid');
   });
 
+  // The field reads like the digit line under a printed barcode: EAN-8 slots, growing to 13 and 14 as digits outgrow them.
+  protected readonly digitCount = computed(() => this.model().code.replace(/\D/g, '').length);
+  protected readonly digitTarget = computed(() => {
+    const count = this.digitCount();
+    return count <= 8 ? 8 : count <= 13 ? 13 : 14;
+  });
+  protected readonly complete = computed(() => !!normalizeBarcode(this.model().code));
+  protected readonly progress = computed(() => (this.complete() ? 1 : this.digitCount() / this.digitTarget()));
+  protected readonly slots = computed(() =>
+    this.complete() ? '' : '_'.repeat(Math.max(this.digitTarget() - this.digitCount(), 0)),
+  );
+  protected readonly digitsWord = computed(() =>
+    this.t(this.digitCount() === 1 ? 'manual.digitsOne' : 'manual.digits'),
+  );
+  // A plain count: barcodes come in 8, 12, 13 or 14 digits, so no fixed target is shown.
+  protected readonly countText = computed(() => {
+    const count = this.digitCount();
+    if (this.complete()) {
+      return this.t('manual.countDone', { count });
+    }
+    return count === 1 ? this.t('manual.countOne') : this.t('manual.count', { count });
+  });
+
   protected readonly toast = signal<Toast | undefined>(undefined);
   private toastTimer?: ReturnType<typeof setTimeout>;
 
