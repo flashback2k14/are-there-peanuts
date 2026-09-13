@@ -17,10 +17,15 @@ function readStoredLang(): Lang | undefined {
 export class I18n {
   private readonly document = inject(DOCUMENT);
 
-  readonly lang = signal<Lang>(
+  private readonly current = signal<Lang>(
     readStoredLang() ??
       (this.document.defaultView?.navigator.language.toLowerCase().startsWith('de') ? 'de' : 'en'),
   );
+  readonly lang = this.current.asReadonly();
+
+  private readonly unsaved = signal(false);
+  /** True when the last choice couldn't be stored (e.g. private mode), so it only lasts for this visit. */
+  readonly choiceUnsaved = this.unsaved.asReadonly();
 
   private readonly dictionary = computed(() => DICTIONARIES[this.lang()]);
 
@@ -34,13 +39,18 @@ export class I18n {
 
   constructor() {
     effect(() => {
-      const lang = this.lang();
-      this.document.documentElement.lang = lang;
-      try {
-        localStorage.setItem(STORAGE_KEY, lang);
-      } catch {
-        // Storage can be unavailable (private mode); the choice then lasts for this visit.
-      }
+      this.document.documentElement.lang = this.lang();
     });
+  }
+
+  /** Switches the language and remembers it for the next visit, if the browser lets us. */
+  select(lang: Lang): void {
+    this.current.set(lang);
+    try {
+      localStorage.setItem(STORAGE_KEY, lang);
+      this.unsaved.set(false);
+    } catch {
+      this.unsaved.set(true);
+    }
   }
 }

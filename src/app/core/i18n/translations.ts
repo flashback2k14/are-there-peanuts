@@ -3,6 +3,9 @@ const de = {
   'nav.home': 'Zum Scanner',
   'nav.german': 'Deutsch',
   'nav.english': 'Englisch',
+  'nav.langUnsaved':
+    'Dein Browser erlaubt gerade keine Speicherung. Die Sprache gilt deshalb nur für diesen Besuch.',
+  'nav.langUnsavedOk': 'OK',
 
   'scan.title': 'Barcode in den Rahmen halten.',
   'scan.hint': 'Die Striche quer, etwa eine Handbreit Abstand.',
@@ -97,6 +100,9 @@ const en: Dictionary = {
   'nav.home': 'Back to scanner',
   'nav.german': 'German',
   'nav.english': 'English',
+  'nav.langUnsaved':
+    'Your browser isn’t allowing storage right now, so the language only applies to this visit.',
+  'nav.langUnsavedOk': 'OK',
 
   'scan.title': 'Hold the barcode inside the frame.',
   'scan.hint': 'Bars running across, about a hand’s width away.',

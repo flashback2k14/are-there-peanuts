@@ -3,14 +3,23 @@
     <span aria-hidden="true">Are there p</span><app-peanut-mark /><span aria-hidden="true">nuts?</span>
   </a>
   <div class="lang" role="group" [attr.aria-label]="t('nav.language')">
-    <button type="button" lang="de" [attr.aria-label]="t('nav.german')" [attr.aria-pressed]="i18n.lang() === 'de'" (click)="i18n.lang.set('de')">
+    <button #langDe type="button" lang="de" [attr.aria-label]="t('nav.german')" [attr.aria-pressed]="i18n.lang() === 'de'" (click)="i18n.select('de')">
       DE
     </button>
-    <button type="button" lang="en" [attr.aria-label]="t('nav.english')" [attr.aria-pressed]="i18n.lang() === 'en'" (click)="i18n.lang.set('en')">
+    <button #langEn type="button" lang="en" [attr.aria-label]="t('nav.english')" [attr.aria-pressed]="i18n.lang() === 'en'" (click)="i18n.select('en')">
       EN
     </button>
   </div>
 </header>
+
+<div class="lang-notice" role="status">
+  @if (showLangNotice()) {
+    <div class="lang-notice__box">
+      <p>{{ t('nav.langUnsaved') }}</p>
+      <button type="button" class="btn btn--outline btn--sm" (click)="dismissLangNotice()">{{ t('nav.langUnsavedOk') }}</button>
+    </div>
+  }
+</div>
 
 <main id="main">
   <router-outlet />

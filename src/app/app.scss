@@ -91,6 +91,34 @@ main {
   cursor: not-allowed;
 }
 
+/* Inline under the topbar rather than a toast, so it never collides with the undo toast */
+.lang-notice {
+  inline-size: 100%;
+  max-inline-size: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
+.lang-notice__box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xs) var(--space-xs) var(--space-xs) var(--space-md);
+  border-radius: var(--radius-row);
+  background: var(--color-paper-3);
+  color: var(--color-ink);
+}
+
+.lang-notice__box p {
+  flex: 1;
+  min-inline-size: 0;
+  font-size: var(--text-sm);
+}
+
+.lang-notice__box .btn {
+  flex: none;
+}
+
 /* Ft5: the safety sentence as a dark notice band, the small print under a dashed seam */
 .foot {
   --color-focus: var(--color-accent);
