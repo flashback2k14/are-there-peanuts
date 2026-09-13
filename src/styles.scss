@@ -310,7 +310,7 @@ button {
 /* Undo toast, pinned to a corner so nothing shifts */
 .toast {
   position: fixed;
-  inset-inline-start: var(--page-gutter);
+  inset-inline-end: var(--page-gutter);
   inset-block-end: max(var(--space-md), env(safe-area-inset-bottom));
   z-index: var(--z-toast);
   display: flex;
@@ -318,10 +318,14 @@ button {
   gap: var(--space-md);
   max-inline-size: calc(100% - 2 * var(--page-gutter));
   padding: var(--space-xs) var(--space-xs) var(--space-xs) var(--space-lg);
+  border: 2px solid var(--color-ink);
   border-radius: var(--radius-pill);
-  background: var(--color-ink);
-  color: var(--color-paper);
-  box-shadow: 0 12px 32px -12px var(--color-shadow);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  /* Paper with a pear edge so it reads over both the light bands and the ink footer */
+  box-shadow:
+    0 4px 0 0 var(--color-accent),
+    0 12px 32px -12px var(--color-shadow);
 }
 
 .toast span {
