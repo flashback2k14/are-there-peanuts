@@ -50,9 +50,11 @@ export class Home {
       value().trim() && !normalizeBarcode(value()) ? { kind: 'invalid' } : undefined,
     );
   });
+  // Typing hides a shown error until the next blur or submit, so it doesn't nag mid-correction.
+  protected readonly editing = signal(false);
   protected readonly showError = computed(() => {
     const field = this.manualForm.code();
-    return field.touched() && field.invalid();
+    return field.touched() && field.invalid() && !this.editing();
   });
   protected readonly helpText = computed(() => {
     if (!this.showError()) {
@@ -102,6 +104,7 @@ export class Home {
 
   protected submitManual(event: Event): void {
     event.preventDefault();
+    this.editing.set(false);
     void submit(this.manualForm, async () => {
       const code = normalizeBarcode(this.model().code);
       if (code) {

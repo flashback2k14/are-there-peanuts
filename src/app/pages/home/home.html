@@ -26,6 +26,8 @@
           aria-describedby="manual-help manual-count"
           [attr.aria-invalid]="showError()"
           [formField]="manualForm.code"
+          (input)="editing.set(true)"
+          (blur)="editing.set(false)"
         />
       </div>
       <button class="btn btn--icon" [class.btn--soft]="!complete()" type="submit" [attr.aria-label]="t('manual.submit')">
