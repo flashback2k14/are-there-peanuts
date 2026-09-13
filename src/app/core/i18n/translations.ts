@@ -23,9 +23,14 @@ const de = {
   'scan.failed': 'Die Kamera ließ sich nicht starten. Gib die Nummer unten ein.',
   'scan.found': 'Code {code} erkannt.',
 
-  'manual.label': 'Barcode-Nummer',
+  'manual.label': 'oder Barcode-Nummer eintippen',
   'manual.helper': 'Die 8 oder 13 Ziffern unter den Strichen.',
   'manual.submit': 'Prüfen',
+  'manual.count': '{count} Ziffern',
+  'manual.countOne': '1 Ziffer',
+  'manual.digits': 'Ziffern',
+  'manual.digitsOne': 'Ziffer',
+  'manual.countDone': '{count} Ziffern, gültige Nummer.',
   'manual.required': 'Gib die Ziffern unter dem Barcode ein.',
   'manual.invalid': 'Diese Nummer ist kein gültiger Barcode. Prüf die Ziffern noch einmal.',
 
@@ -121,9 +126,14 @@ const en: Dictionary = {
   'scan.failed': 'The camera didn’t start. Type the number below.',
   'scan.found': 'Found code {code}.',
 
-  'manual.label': 'Barcode number',
+  'manual.label': 'or type the barcode number',
   'manual.helper': 'The 8 or 13 digits under the bars.',
   'manual.submit': 'Check',
+  'manual.count': '{count} digits',
+  'manual.countOne': '1 digit',
+  'manual.digits': 'digits',
+  'manual.digitsOne': 'digit',
+  'manual.countDone': '{count} digits, valid number.',
   'manual.required': 'Type the digits under the barcode.',
   'manual.invalid': 'That number isn’t a valid barcode. Check the digits again.',
 
