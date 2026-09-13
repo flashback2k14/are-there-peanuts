@@ -1,7 +1,13 @@
 <section class="scan" aria-labelledby="scan-title">
   <h1 id="scan-title" class="scan__title">{{ t('scan.title') }}</h1>
   <app-scanner (detected)="open($event)" />
-  <p class="scan__hint">{{ t('scan.hint') }}</p>
+  <p class="scan__hint">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <path d="M4 6v12M11 6v12M17 6v12M20 6v12" />
+      <path d="M7.5 6v12M14 6v12" stroke-width="1.25" />
+    </svg>
+    <span>{{ t('scan.hint') }}</span>
+  </p>
 
   <form class="manual" novalidate (submit)="submitManual($event)">
     <label class="manual__label" for="manual-code">{{ t('manual.label') }}</label>
