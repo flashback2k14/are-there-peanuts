@@ -1,4 +1,4 @@
-import { Service, effect, signal } from '@angular/core';
+import { Service, signal } from '@angular/core';
 import { Verdict } from './product';
 
 export type HistoryVerdict = Verdict | 'not-found';
@@ -34,34 +34,37 @@ export class ScanHistory {
   private readonly state = signal<HistoryEntry[]>(load());
   readonly entries = this.state.asReadonly();
 
-  constructor() {
-    effect(() => {
-      const entries = this.state();
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-      } catch {
-        // Without storage the history simply lives for this visit.
-      }
-    });
-  }
+  private readonly unsaved = signal(false);
+  /** True when the last change couldn't be stored (e.g. private mode), so the history only lasts for this visit. */
+  readonly changesUnsaved = this.unsaved.asReadonly();
 
   record(entry: HistoryEntry): void {
-    this.state.update((entries) =>
-      [entry, ...entries.filter((existing) => existing.code !== entry.code)].slice(0, MAX_ENTRIES),
+    this.commit(
+      [entry, ...this.state().filter((existing) => existing.code !== entry.code)].slice(0, MAX_ENTRIES),
     );
   }
 
   /** Removes one entry and returns a function that puts it back where it was. */
   remove(code: string): () => void {
     const before = this.state();
-    this.state.set(before.filter((entry) => entry.code !== code));
-    return () => this.state.set(before);
+    this.commit(before.filter((entry) => entry.code !== code));
+    return () => this.commit(before);
   }
 
   /** Empties the history and returns a function that restores it. */
   clear(): () => void {
     const before = this.state();
-    this.state.set([]);
-    return () => this.state.set(before);
+    this.commit([]);
+    return () => this.commit(before);
+  }
+
+  private commit(entries: HistoryEntry[]): void {
+    this.state.set(entries);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+      this.unsaved.set(false);
+    } catch {
+      this.unsaved.set(true);
+    }
   }
 }

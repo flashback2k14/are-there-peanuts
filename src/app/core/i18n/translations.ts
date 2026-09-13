@@ -39,6 +39,8 @@ const de = {
   'history.clear': 'Verlauf leeren',
   'history.undo': 'Rückgängig',
   'history.unnamed': 'Produkt {code}',
+  'history.unsaved':
+    'Dein Browser erlaubt gerade keine Speicherung. Der Verlauf gilt deshalb nur für diesen Besuch.',
 
   'verdict.contains': 'Enthält Erdnüsse.',
   'verdict.may-contain': 'Kann Spuren enthalten.',
@@ -135,6 +137,8 @@ const en: Dictionary = {
   'history.clear': 'Clear history',
   'history.undo': 'Undo',
   'history.unnamed': 'Product {code}',
+  'history.unsaved':
+    'Your browser isn’t allowing storage right now, so the history only lasts for this visit.',
 
   'verdict.contains': 'Contains peanuts.',
   'verdict.may-contain': 'May contain traces.',

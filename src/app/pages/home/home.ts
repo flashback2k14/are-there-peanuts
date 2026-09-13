@@ -38,6 +38,7 @@ export class Home {
   private readonly undoButton = viewChild<ElementRef<HTMLButtonElement>>('undoButton');
 
   protected readonly entries = this.history.entries;
+  protected readonly historyUnsaved = this.history.changesUnsaved;
   protected readonly countLabel = computed(() =>
     this.t(this.entries().length === 1 ? 'history.countLabelOne' : 'history.countLabel'),
   );

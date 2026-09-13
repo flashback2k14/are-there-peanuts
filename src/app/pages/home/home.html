@@ -35,6 +35,12 @@
       }
     </div>
 
+    <div class="history__notice" role="status">
+      @if (historyUnsaved()) {
+        <p>{{ t('history.unsaved') }}</p>
+      }
+    </div>
+
     @if (entries().length) {
       <ul class="history__list" role="list">
         @for (entry of entries(); track entry.code) {

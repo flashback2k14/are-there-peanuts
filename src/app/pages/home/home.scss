@@ -112,6 +112,23 @@
   letter-spacing: -0.04em;
 }
 
+.history__notice {
+  inline-size: 100%;
+}
+
+.history__notice:empty {
+  display: none;
+}
+
+.history__notice p {
+  max-inline-size: 60ch;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-row);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-size: var(--text-sm);
+}
+
 .history__list {
   display: grid;
   gap: var(--space-sm);

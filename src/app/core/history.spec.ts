@@ -44,9 +44,27 @@ describe('ScanHistory', () => {
     expect(history.entries().length).toBe(1);
   });
 
+  afterEach(() => vi.restoreAllMocks());
+
   it('persists entries to localStorage', () => {
     history.record(entry('42'));
-    TestBed.tick();
     expect(JSON.parse(localStorage.getItem('atp.history') ?? '[]')[0].code).toBe('42');
+    expect(history.changesUnsaved()).toBe(false);
+  });
+
+  it('keeps entries in memory but flags them as unsaved when storage is unavailable', () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('blocked', 'SecurityError');
+    });
+    history.record(entry('42'));
+    expect(history.entries().map((e) => e.code)).toEqual(['42']);
+    expect(history.changesUnsaved()).toBe(true);
+  });
+
+  it('does not flag anything before the history changes', () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('blocked', 'SecurityError');
+    });
+    expect(history.changesUnsaved()).toBe(false);
   });
 });
