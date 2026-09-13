@@ -1,0 +1,78 @@
+:host {
+  display: block;
+}
+
+/* The one off-grid moment: on phones the viewfinder runs past the right edge
+   (its rounded corners are clipped by the viewport), on desktop it overhangs the column. */
+.viewfinder {
+  --bleed: calc(var(--page-gutter) + var(--radius-card));
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  margin-inline-end: calc(-1 * var(--bleed));
+  border-radius: var(--radius-card);
+  background: var(--color-ink);
+  color: var(--color-paper);
+  box-shadow: 0 var(--edge-card) 0 0 var(--color-accent-deep);
+}
+
+@media (min-width: 60rem) {
+  .viewfinder {
+    --bleed: var(--space-2xl);
+    max-block-size: 58svh;
+  }
+}
+
+.viewfinder__video {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity var(--dur-short) var(--ease-out);
+}
+
+:host([data-state='scanning']) .viewfinder__video {
+  opacity: 1;
+}
+
+.viewfinder__guide {
+  position: absolute;
+  inset-block: 30%;
+  inset-inline: 12% calc(12% + var(--bleed));
+  border-radius: var(--radius-row);
+  outline: 3px solid var(--color-accent);
+  box-shadow: 0 0 0 100vmax var(--color-scrim);
+  opacity: 0;
+  transition: opacity var(--dur-short) var(--ease-out);
+}
+
+:host([data-state='scanning']) .viewfinder__guide {
+  opacity: 1;
+}
+
+.viewfinder__cover {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: end;
+  justify-items: start;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  padding-inline-end: calc(var(--bleed) + var(--space-lg));
+}
+
+.viewfinder__message {
+  max-inline-size: 45ch;
+  font-size: var(--text-base);
+  color: var(--color-paper);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-block-start: calc(var(--edge-card) + var(--space-sm));
+}

@@ -1,0 +1,9 @@
+{
+  "/api/off": {
+    "target": "https://world.openfoodfacts.org",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": { "^/api/off": "/api/v2" },
+    "headers": { "User-Agent": "AreTherePeanuts/0.1 (local development)" }
+  }
+}

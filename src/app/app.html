@@ -1,0 +1,42 @@
+<header class="topbar">
+  <a class="wordmark" routerLink="/" [attr.aria-label]="'Are there peanuts? · ' + t('nav.home')">
+    <span aria-hidden="true">Are there p</span><app-peanut-mark /><span aria-hidden="true">nuts?</span>
+  </a>
+  <div class="lang" role="group" [attr.aria-label]="t('nav.language')">
+    <button #langDe type="button" lang="de" [attr.aria-label]="t('nav.german')" [attr.aria-pressed]="i18n.lang() === 'de'" (click)="i18n.select('de')">
+      DE
+    </button>
+    <button #langEn type="button" lang="en" [attr.aria-label]="t('nav.english')" [attr.aria-pressed]="i18n.lang() === 'en'" (click)="i18n.select('en')">
+      EN
+    </button>
+  </div>
+</header>
+
+<div class="lang-notice" role="status">
+  @if (showLangNotice()) {
+    <div class="lang-notice__box">
+      <p>{{ t('nav.langUnsaved') }}</p>
+      <button type="button" class="btn btn--outline btn--sm" (click)="dismissLangNotice()">{{ t('nav.langUnsavedOk') }}</button>
+    </div>
+  }
+</div>
+
+<main id="main">
+  <router-outlet />
+</main>
+
+<footer class="foot">
+  <div class="foot__inner">
+    <div class="foot__notice">
+      <span class="foot__icon" aria-hidden="true">!</span>
+      <p class="foot__line">{{ t('footer.statement') }}</p>
+      <p class="foot__disclaimer">{{ t('footer.disclaimer') }}</p>
+    </div>
+    <p class="foot__meta">
+      {{ t('footer.source') }}
+      <a class="link" href="https://world.openfoodfacts.org" target="_blank" rel="noopener">Open Food Facts</a>
+      ·
+      <a class="link" href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener">ODbL</a>
+    </p>
+  </div>
+</footer>

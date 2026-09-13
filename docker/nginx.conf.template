@@ -1,0 +1,100 @@
+# Rendered by the nginx image's envsubst step. Only ${OFF_USER_AGENT} and ${NGINX_RESOLVER}
+# are environment variables; everything with a single $ is an nginx variable.
+
+proxy_cache_path /var/cache/nginx/off levels=1:2 keys_zone=off_cache:10m max_size=200m inactive=7d use_temp_path=off;
+
+# Open Food Facts allows 15 product lookups per minute per IP. The whole server shares one IP,
+# so the limit is global and only applies to requests that miss the cache (see the inner server).
+limit_req_zone $server_name zone=off_upstream:1m rate=15r/m;
+
+gzip on;
+gzip_min_length 1024;
+gzip_types application/json application/javascript text/css image/svg+xml application/wasm application/manifest+json;
+
+server {
+    listen 80;
+    server_name _;
+    root /usr/share/nginx/html;
+    index index.html;
+    server_tokens off;
+
+    include /etc/nginx/snippets/security-headers.conf;
+
+    location = /healthz {
+        access_log off;
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+
+    # Product lookups: answered from the cache when possible, otherwise via the rate-limited inner server.
+    location /api/off/ {
+        proxy_pass http://127.0.0.1:8081/;
+        # Cache plain bodies only; this server compresses per client. Otherwise a gzip body
+        # cached for a browser would be replayed to clients that never asked for gzip.
+        proxy_set_header Accept-Encoding "";
+        proxy_cache off_cache;
+        proxy_cache_key $uri$is_args$args;
+        proxy_cache_valid 200 24h;
+        proxy_cache_valid 404 1h;
+        proxy_cache_lock on;
+        proxy_cache_use_stale error timeout updating http_429 http_500 http_502 http_503 http_504;
+        proxy_ignore_headers Cache-Control Expires Set-Cookie Vary;
+        proxy_hide_header Set-Cookie;
+        proxy_hide_header Access-Control-Allow-Origin;
+        proxy_hide_header X-Cache-Status;
+        include /etc/nginx/snippets/security-headers.conf;
+        add_header X-Cache-Status $upstream_cache_status always;
+    }
+
+    # The app shell and service-worker files must never be cached by the browser.
+    location ~ ^/(index\.html|ngsw\.json|ngsw-worker\.js|safety-worker\.js|worker-basic\.min\.js)$ {
+        include /etc/nginx/snippets/security-headers.conf;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    location = /manifest.webmanifest {
+        default_type application/manifest+json;
+        include /etc/nginx/snippets/security-headers.conf;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    # Content-hashed build output can be cached forever.
+    location ~ "^/(.+-[A-Za-z0-9_-]{8}\.(js|css)|media/.+)$" {
+        include /etc/nginx/snippets/security-headers.conf;
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+    }
+
+    location /wasm/ {
+        include /etc/nginx/snippets/security-headers.conf;
+        add_header Cache-Control "public, max-age=86400" always;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+
+# Inner hop to Open Food Facts: the only place the rate limit and the User-Agent apply.
+server {
+    listen 127.0.0.1:8081;
+    resolver ${NGINX_RESOLVER} valid=300s ipv6=off;
+    resolver_timeout 5s;
+
+    location / {
+        limit_req zone=off_upstream burst=10 delay=4;
+        limit_req_status 429;
+
+        set $off_host world.openfoodfacts.org;
+        proxy_pass https://$off_host/api/v2$uri$is_args$args;
+        proxy_http_version 1.1;
+        proxy_ssl_server_name on;
+        proxy_ssl_name $off_host;
+        proxy_set_header Host $off_host;
+        proxy_set_header User-Agent "${OFF_USER_AGENT}";
+        proxy_set_header Accept-Encoding "";
+        proxy_set_header Cookie "";
+        proxy_set_header X-Forwarded-For "";
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 15s;
+    }
+}

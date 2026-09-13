@@ -1,0 +1,16 @@
+services:
+  web:
+    build: .
+    image: are-there-peanuts:latest
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8080}:80"
+    environment:
+      # Open Food Facts wants to know who is calling: "AppName/Version (contact e-mail)".
+      OFF_USER_AGENT: ${OFF_USER_AGENT:?Set OFF_USER_AGENT in .env, e.g. AreTherePeanuts/1.0 (you@example.com)}
+      NGINX_RESOLVER: ${NGINX_RESOLVER:-127.0.0.11}
+    volumes:
+      - off-cache:/var/cache/nginx/off
+
+volumes:
+  off-cache:

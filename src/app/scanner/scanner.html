@@ -1,0 +1,32 @@
+<div class="viewfinder">
+  <video #video class="viewfinder__video" playsinline muted aria-hidden="true"></video>
+  <div class="viewfinder__guide" aria-hidden="true"></div>
+
+  @if (state() !== 'scanning') {
+    <div class="viewfinder__cover">
+      <p class="viewfinder__message">{{ message() }}</p>
+      @if (canStart()) {
+        <button type="button" class="btn btn--lg" [disabled]="state() === 'starting'" (click)="start()">
+          {{ state() === 'starting' ? t('scan.starting') : t('scan.start') }}
+        </button>
+      }
+    </div>
+  }
+
+  @if (burst(); as point) {
+    <span class="star-burst" aria-hidden="true" [style.left.%]="point.x" [style.top.%]="point.y"></span>
+  }
+</div>
+
+@if (state() === 'scanning') {
+  <div class="controls">
+    @if (torchAvailable()) {
+      <button type="button" class="btn btn--soft btn--sm" [attr.aria-pressed]="torchOn()" (click)="toggleTorch()">
+        {{ torchOn() ? t('scan.torchOff') : t('scan.torchOn') }}
+      </button>
+    }
+    <button type="button" class="btn btn--outline btn--sm" (click)="stop()">{{ t('scan.stop') }}</button>
+  </div>
+}
+
+<p class="sr-only" aria-live="polite">{{ announcement() }}</p>
