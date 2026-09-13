@@ -30,7 +30,24 @@ npm install
 npm start
 ```
 
-Der Dev-Server läuft auf `http://localhost:4200` und leitet `/api/off` über [proxy.conf.json](proxy.conf.json) an Open Food Facts weiter. Die Kamera funktioniert auf `localhost` auch ohne HTTPS.
+Der Dev-Server läuft per HTTPS auf `https://localhost:4200` und leitet `/api/off` über [proxy.conf.json](proxy.conf.json) an Open Food Facts weiter. Das Zertifikat ist selbst signiert, der Browser warnt also beim ersten Aufruf.
+
+### Auf dem Handy testen
+
+Der Dev-Server lauscht auf allen Netzwerkschnittstellen (`host: 0.0.0.0` in [angular.json](angular.json)) und ist dadurch im lokalen Netz erreichbar. HTTPS ist nötig, weil Browser die Kamera nur auf sicheren Seiten freigeben.
+
+1. Handy und Rechner ins selbe WLAN bringen.
+2. Die IP-Adresse des Rechners herausfinden, unter macOS zum Beispiel mit:
+
+   ```bash
+   ipconfig getifaddr en0
+   ```
+
+3. `npm start` ausführen und auf dem Handy `https://<ip-adresse>:4200` öffnen.
+4. Die Zertifikatswarnung bestätigen: In Safari (iOS) über „Details einblenden“ und „Diese Website besuchen“, in Chrome (Android) über „Erweitert“ und „Weiter zu …“.
+5. Fragt macOS, ob `node` eingehende Verbindungen annehmen darf, das erlauben.
+
+Der Service Worker ist im Dev-Modus abgeschaltet. Für PWA-Tests also besser den Docker-Build hinter dem Reverse Proxy nehmen.
 
 ```bash
 npm test
