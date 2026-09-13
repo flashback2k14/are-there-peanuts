@@ -8,7 +8,7 @@ const de = {
   'nav.langUnsavedOk': 'OK',
 
   'scan.title': 'Barcode in den Rahmen halten.',
-  'scan.hint': 'Die Striche quer, etwa eine Handbreit Abstand.',
+  'scan.hint': 'Striche quer, eine Handbreit Abstand.',
   'scan.start': 'Kamera starten',
   'scan.starting': 'Kamera startet …',
   'scan.stop': 'Kamera aus',
@@ -107,7 +107,7 @@ const en: Dictionary = {
   'nav.langUnsavedOk': 'OK',
 
   'scan.title': 'Hold the barcode inside the frame.',
-  'scan.hint': 'Bars running across, about a hand’s width away.',
+  'scan.hint': 'Bars across, a hand’s width away.',
   'scan.start': 'Start camera',
   'scan.starting': 'Starting camera…',
   'scan.stop': 'Camera off',

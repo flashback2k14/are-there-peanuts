@@ -18,12 +18,27 @@
   overflow-wrap: anywhere;
 }
 
-/* Offset to the right of the column: the one place the text steps out of line */
 .scan__hint {
-  max-inline-size: 45ch;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  inline-size: fit-content;
   margin-block-start: var(--space-xs);
-  padding-inline-start: var(--space-xl);
-  color: var(--color-ink-2);
+  padding: var(--space-xs);
+  border-radius: var(--radius-input);
+  background: var(--color-cyan-tint);
+  font-size: var(--text-sm);
+  color: var(--color-accent-2-deep);
+
+  svg {
+    flex: none;
+    inline-size: 1.15em;
+    block-size: 1.15em;
+  }
+
+  @media (width >= 360px) {
+    padding-inline: var(--space-sm);
+  }
 }
 
 .manual {
